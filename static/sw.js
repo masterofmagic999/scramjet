@@ -110,6 +110,36 @@ self.addEventListener("message", ({ data }) => {
 });
 
 scramjet.addEventListener("request", (e) => {
+	// ── Anti-bot / CAPTCHA header hardening ─────────────────────────────────
+	// The browser's service worker passes its own request headers through, but
+	// these guards ensure critical anti-detection headers are ALWAYS present
+	// regardless of how the request was initiated (XHR, fetch(), form submit…).
+
+	// Accept-Language is checked by Cloudflare and reCAPTCHA to distinguish
+	// real browsers from headless bots.
+	if (!e.requestHeaders["accept-language"]) {
+		e.requestHeaders["accept-language"] = "en-US,en;q=0.9";
+	}
+
+	// Accept is expected for navigation and sub-resource requests.
+	if (
+		(e.destination === "document" || e.destination === "iframe") &&
+		!e.requestHeaders["accept"]
+	) {
+		e.requestHeaders["accept"] =
+			"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
+	}
+
+	// Sec-Fetch-User: ?1 signals a user-initiated navigation. Missing it on
+	// navigate requests is a strong bot indicator.
+	if (
+		e.requestHeaders["sec-fetch-mode"] === "navigate" &&
+		!e.requestHeaders["sec-fetch-user"]
+	) {
+		e.requestHeaders["sec-fetch-user"] = "?1";
+	}
+
+	// Playground data injection (existing logic below) ───────────────────────
 	if (playgroundData && e.url.href.startsWith(playgroundData.origin)) {
 		const headers = {};
 		const origin = playgroundData.origin;

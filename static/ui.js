@@ -10,7 +10,11 @@ const scramjet = new ScramjetController({
 		rewriterLogs: false,
 		scramitize: false,
 		cleanErrors: true,
-		sourcemaps: true,
+		// Disable source maps in production – they add overhead to every JS
+		// rewrite without benefit for end users.
+		sourcemaps: false,
+		// Allow downloads to be intercepted so they work through the proxy.
+		interceptDownloads: true,
 	},
 });
 
