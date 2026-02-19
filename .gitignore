@@ -17,6 +17,10 @@ test-results
 package-lock.json
 rebuild.sh
 
+# Cookie store (may contain sensitive session data)
+.cookies.json
+.env
+
 # Typedoc
 _docs/
 _docs-dev/

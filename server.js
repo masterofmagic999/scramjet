@@ -16,6 +16,7 @@ import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
 import { bareModulePath } from "@mercuryworkshop/bare-as-module3";
 import { chmodSync, mkdirSync, writeFileSync } from "fs";
+import { loadCookies, saveCookies } from "./cookie-store.js";
 
 const bare = createBareServer("/bare/", {
 	logErrors: true,
@@ -82,6 +83,70 @@ fastify.register(fastifyStatic, {
 	prefix: "/baremod/",
 	decorateReply: false,
 });
+
+// ── Cookie store API ────────────────────────────────────────────────────────
+
+fastify.get("/api/cookies", async (_req, reply) => {
+	reply.header("Content-Type", "application/json");
+	return loadCookies();
+});
+
+fastify.post("/api/cookies", async (req, reply) => {
+	const cookies = loadCookies();
+	const { domain, name, value, path = "/", expires, httpOnly, secure, sameSite } =
+		req.body ?? {};
+	if (!domain || !name) {
+		return reply.code(400).send({ error: "domain and name are required" });
+	}
+	if (!cookies[domain]) cookies[domain] = {};
+	cookies[domain][name] = { value, path, expires, httpOnly, secure, sameSite };
+	saveCookies(cookies);
+	return { ok: true };
+});
+
+fastify.delete("/api/cookies", async (_req, _reply) => {
+	saveCookies({});
+	return { ok: true };
+});
+
+fastify.delete("/api/cookies/:domain/:name", async (req, reply) => {
+	const cookies = loadCookies();
+	const { domain, name } = req.params;
+	if (cookies[domain]) {
+		delete cookies[domain][name];
+		if (Object.keys(cookies[domain]).length === 0) {
+			delete cookies[domain];
+		}
+	}
+	saveCookies(cookies);
+	return { ok: true };
+});
+
+// ── Heartbeat (keep-alive) ──────────────────────────────────────────────────
+
+fastify.get("/api/heartbeat", async (_req, _reply) => {
+	return { ok: true, time: Date.now() };
+});
+
+// ── Header fingerprint randomization ───────────────────────────────────────
+
+const USER_AGENTS = [
+	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+	"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+	"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0",
+	"Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Safari/605.1.15",
+];
+
+export function randomUserAgent() {
+	return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
+}
+
+fastify.get("/api/useragent", async (_req, _reply) => {
+	return { userAgent: randomUserAgent() };
+});
+
+// ───────────────────────────────────────────────────────────────────────────
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) || 1337 : 1337;
 

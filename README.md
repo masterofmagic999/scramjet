@@ -82,6 +82,30 @@ chmod +x scripts/serve-static.sh
 
 This essentially simulates the CI pipeline, but in a shell script.
 
+## GitHub Codespaces
+
+A `.devcontainer/devcontainer.json` is included for one-click Codespace setup.
+
+| Feature | Detail |
+|---|---|
+| Auto-install | `pnpm install` runs automatically on container creation |
+| Keep-alive | `scripts/heartbeat.js` pings the server every 4 min to prevent idle suspension |
+| **Less memory usage** | `NODE_OPTIONS=--max-old-space-size=512` is set in the devcontainer to cap V8 heap usage, keeping the Codespace responsive on low-RAM (2-core) instances |
+| Port | `1337` is forwarded automatically |
+
+To start the heartbeat manually: `node scripts/heartbeat.js`
+
+### Environment variables
+
+Copy `.env.example` to `.env` and fill in the values:
+
+| Variable | Purpose |
+|---|---|
+| `PORT` | Port for the dev server (default: `1337`) |
+| `STORE_KEY` | Encryption key for the server-side cookie store (AES-256-GCM). Leave unset to store cookies as plain JSON. |
+| `COOKIE_STORE_PATH` | Path to the cookie store file (default: `.cookies.json`) |
+| `NODE_OPTIONS` | Set to `--max-old-space-size=512` to limit V8 heap for low-RAM environments |
+
 ## Resources
 
 - [TN Docs](https://docs.titaniumnetwork.org/proxies/scramjet) - There's a page on TN's docs for Scramjet, which is structured more like a guide if you are an interested proxy site developer.
