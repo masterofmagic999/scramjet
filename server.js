@@ -16,7 +16,13 @@ import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
 import { bareModulePath } from "@mercuryworkshop/bare-as-module3";
 import { chmodSync, mkdirSync, writeFileSync } from "fs";
-import { loadCookies, saveCookies } from "./cookie-store.js";
+import {
+	clearCookies,
+	loadCookies,
+	saveCookies,
+	SUPABASE_ENABLED,
+} from "./cookie-store.js";
+import { getUserId, signIn, signUp } from "./supabase-store.js";
 
 const bare = createBareServer("/bare/", {
 	logErrors: true,
@@ -84,15 +90,81 @@ fastify.register(fastifyStatic, {
 	decorateReply: false,
 });
 
+// ── Auth helpers ────────────────────────────────────────────────────────────
+
+/**
+ * Extract a bearer token from the Authorization header and return the
+ * Supabase user ID, or the default fallback when auth is not configured.
+ *
+ * @param {import("fastify").FastifyRequest} req
+ * @returns {Promise<string>}
+ */
+async function resolveUserId(req) {
+	if (!SUPABASE_ENABLED) return "_default";
+	const auth = req.headers["authorization"] ?? "";
+	if (!auth.startsWith("Bearer ")) return "_default";
+	const token = auth.slice(7);
+	return (await getUserId(token)) ?? "_default";
+}
+
+// ── Auth endpoints ──────────────────────────────────────────────────────────
+
+fastify.post("/api/auth/register", async (req, reply) => {
+	if (!SUPABASE_ENABLED) {
+		return reply.code(503).send({ error: "Supabase is not configured" });
+	}
+	const { email, password } = req.body ?? {};
+	if (!email || !password) {
+		return reply.code(400).send({ error: "email and password are required" });
+	}
+	const result = await signUp(email, password);
+	if (!result) {
+		return reply.code(400).send({ error: "Registration failed" });
+	}
+	return result;
+});
+
+fastify.post("/api/auth/login", async (req, reply) => {
+	if (!SUPABASE_ENABLED) {
+		return reply.code(503).send({ error: "Supabase is not configured" });
+	}
+	const { email, password } = req.body ?? {};
+	if (!email || !password) {
+		return reply.code(400).send({ error: "email and password are required" });
+	}
+	const result = await signIn(email, password);
+	if (!result) {
+		return reply.code(401).send({ error: "Invalid credentials" });
+	}
+	return result;
+});
+
+fastify.get("/api/auth/me", async (req, reply) => {
+	if (!SUPABASE_ENABLED) {
+		return reply.code(503).send({ error: "Supabase is not configured" });
+	}
+	const auth = req.headers["authorization"] ?? "";
+	if (!auth.startsWith("Bearer ")) {
+		return reply.code(401).send({ error: "No token provided" });
+	}
+	const userId = await getUserId(auth.slice(7));
+	if (!userId) {
+		return reply.code(401).send({ error: "Invalid or expired token" });
+	}
+	return { userId };
+});
+
 // ── Cookie store API ────────────────────────────────────────────────────────
 
-fastify.get("/api/cookies", async (_req, reply) => {
+fastify.get("/api/cookies", async (req, reply) => {
+	const userId = await resolveUserId(req);
 	reply.header("Content-Type", "application/json");
-	return loadCookies();
+	return await loadCookies(userId);
 });
 
 fastify.post("/api/cookies", async (req, reply) => {
-	const cookies = loadCookies();
+	const userId = await resolveUserId(req);
+	const cookies = await loadCookies(userId);
 	const { domain, name, value, path = "/", expires, httpOnly, secure, sameSite } =
 		req.body ?? {};
 	if (!domain || !name) {
@@ -100,17 +172,19 @@ fastify.post("/api/cookies", async (req, reply) => {
 	}
 	if (!cookies[domain]) cookies[domain] = {};
 	cookies[domain][name] = { value, path, expires, httpOnly, secure, sameSite };
-	saveCookies(cookies);
+	await saveCookies(cookies, userId);
 	return { ok: true };
 });
 
-fastify.delete("/api/cookies", async (_req, _reply) => {
-	saveCookies({});
+fastify.delete("/api/cookies", async (req, _reply) => {
+	const userId = await resolveUserId(req);
+	await clearCookies(userId);
 	return { ok: true };
 });
 
 fastify.delete("/api/cookies/:domain/:name", async (req, reply) => {
-	const cookies = loadCookies();
+	const userId = await resolveUserId(req);
+	const cookies = await loadCookies(userId);
 	const { domain, name } = req.params;
 	if (cookies[domain]) {
 		delete cookies[domain][name];
@@ -118,7 +192,7 @@ fastify.delete("/api/cookies/:domain/:name", async (req, reply) => {
 			delete cookies[domain];
 		}
 	}
-	saveCookies(cookies);
+	await saveCookies(cookies, userId);
 	return { ok: true };
 });
 
