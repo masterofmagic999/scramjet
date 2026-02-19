@@ -24,15 +24,25 @@
 			};
 		</script>
 		<style>
-			body,
-			html,
-			#app {
+			*, *::before, *::after { box-sizing: border-box; }
+			body, html, #app {
 				width: 100vw;
 				height: 100vh;
 				margin: 0;
 				padding: 0;
 				overflow: hidden;
 				background: #050505;
+			}
+			/* Animated wallpaper */
+			@keyframes wgradient {
+				0%   { background-position: 0% 50%; }
+				50%  { background-position: 100% 50%; }
+				100% { background-position: 0% 50%; }
+			}
+			.wallpaper {
+				background: linear-gradient(135deg, #0d0d1a 0%, #0a1628 25%, #100d20 50%, #0d1a2e 75%, #070714 100%);
+				background-size: 400% 400%;
+				animation: wgradient 20s ease infinite;
 			}
 			.glass {
 				background: rgba(255, 255, 255, 0.05);
@@ -41,8 +51,12 @@
 				border: 1px solid rgba(255, 255, 255, 0.1);
 			}
 			@keyframes fade {
-				from { opacity: 0; }
-				to { opacity: 1; }
+				from { opacity: 0; transform: translateY(6px); }
+				to   { opacity: 1; transform: translateY(0); }
+			}
+			@keyframes slideUp {
+				from { opacity: 0; transform: translateY(24px); }
+				to   { opacity: 1; transform: translateY(0); }
 			}
 		</style>
 		<script
@@ -57,7 +71,7 @@
 		<script src="store.js"></script>
 	</head>
 
-	<body class="bg-[#050505] text-white">
+	<body class="wallpaper text-white">
 		<div id="app"></div>
 		<script src="ui.js"></script>
 	</body>
