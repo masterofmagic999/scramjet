@@ -911,7 +911,8 @@ this.css = `
     box-shadow: 0 1px 0 rgba(255,255,255,0.03), inset 0 1px 0 rgba(255,255,255,0.04);
     z-index: 100; user-select: none;
     .mb-brand {
-      font-size: 0.8rem; font-weight: 800; letter-spacing: -0.02em;
+      font-size: 0.82rem; font-weight: 900; letter-spacing: -0.01em;
+      font-family: "Nunito", "Inter", sans-serif;
       background: linear-gradient(90deg, #c4b5fd 0%, #a78bfa 60%, #818cf8 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
@@ -968,37 +969,66 @@ this.css = `
     flex:1; padding-bottom:80px; animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1);
     @keyframes hsGlowPulse {
       0%, 100% { text-shadow: 0 0 60px rgba(139,92,246,0.7), 0 0 120px rgba(124,58,237,0.35), 0 0 240px rgba(124,58,237,0.12); }
-      50% { text-shadow: 0 0 90px rgba(167,139,250,1), 0 0 180px rgba(124,58,237,0.6), 0 0 320px rgba(124,58,237,0.22); }
+      50% { text-shadow: 0 0 100px rgba(167,139,250,1), 0 0 200px rgba(124,58,237,0.65), 0 0 350px rgba(124,58,237,0.25); }
     }
-    .hs-brand { font-family: "Inter Tight", "Inter", system-ui, sans-serif; /* Inter Tight loaded via Google Fonts in index.html */ font-size: clamp(0.75rem, 1.5vw, 0.9rem); font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(167,139,250,0.6); margin-bottom: 0.35em; user-select: none; }
-    .hs-clock { text-align:center; margin-bottom:0.6em; user-select:none; }
-    .hs-time {
-      font-family: "Inter Tight", "Inter", system-ui, sans-serif;
-      font-size: clamp(5rem, 14vw, 9.5rem); font-weight: 200; letter-spacing: -0.04em; line-height: 1; color: #fff;
+    .hs-welcome {
+      font-family: "Nunito", "Inter", sans-serif;
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      font-weight: 600;
+      color: rgba(196, 181, 253, 0.7);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.1em;
+      user-select: none;
+    }
+    .hs-name {
+      font-family: "Nunito", "Inter", sans-serif;
+      font-size: clamp(3.8rem, 10vw, 7rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: #fff;
       text-shadow: 0 0 60px rgba(139,92,246,0.7), 0 0 120px rgba(124,58,237,0.35), 0 0 240px rgba(124,58,237,0.12);
       animation: hsGlowPulse 6s ease-in-out infinite;
+      user-select: none;
+      margin-bottom: 0.15em;
     }
-    .hs-date { font-size: clamp(0.82rem, 1.8vw, 0.95rem); color: rgba(255,255,255,0.32); margin-top: 0.55em; letter-spacing: 0.07em; font-weight: 400; }
-    .hs-search-wrap { position: relative; width: clamp(300px, 52vw, 560px); margin: 1.6em 0 2.2em; }
-    .hs-search-icon { position:absolute; left:1.15em; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.3); pointer-events:none; font-size:0.88rem; }
+    .hs-sub {
+      font-size: clamp(0.78rem, 1.6vw, 0.9rem);
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.06em;
+      margin-bottom: 2em;
+      user-select: none;
+    }
+    .hs-card {
+      background: rgba(6, 4, 18, 0.6);
+      backdrop-filter: saturate(200%) blur(28px);
+      -webkit-backdrop-filter: saturate(200%) blur(28px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid rgba(255,255,255,0.18);
+      border-radius: 26px;
+      padding: 1.75em 2em 1.5em;
+      width: min(580px, 88vw);
+      box-shadow: 0 28px 72px rgba(0,0,0,0.55), 0 6px 20px rgba(0,0,0,0.35),
+                  inset 0 1px 0 rgba(255,255,255,0.09), 0 0 0 1px rgba(139,92,246,0.08);
+    }
+    .hs-search-wrap { position: relative; width: 100%; margin-bottom: 1.6em; }
+    .hs-search-icon { position:absolute; left:1.15em; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.3); pointer-events:none; font-size:0.9rem; }
     .hs-search {
       width:100%;
-      background: rgba(8, 5, 22, 0.68);
-      border: 1px solid rgba(139,92,246,0.28);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 3em; color:#fff; outline:none;
-      padding: 0.92em 1.2em 0.92em 3em; font-size: 0.97rem;
-      backdrop-filter: saturate(200%) blur(24px); -webkit-backdrop-filter: saturate(200%) blur(24px);
-      box-shadow: 0 6px 28px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+      padding: 0.88em 1.2em 0.88em 3em; font-size: 0.97rem;
       transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
       font-family: inherit;
     }
     .hs-search::placeholder { color: rgba(255,255,255,0.22); }
     .hs-search:focus {
-      border-color: rgba(139,92,246,0.75);
-      background: rgba(12, 7, 30, 0.82);
-      box-shadow: 0 0 0 3px rgba(124,58,237,0.22), 0 0 48px rgba(124,58,237,0.2), 0 6px 28px rgba(0,0,0,0.45);
+      border-color: rgba(139,92,246,0.7);
+      background: rgba(255,255,255,0.09);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.2), 0 0 32px rgba(124,58,237,0.15);
     }
-    .hs-apps { display: flex; gap: 1.35em; flex-wrap: wrap; justify-content: center; max-width: 640px; }
+    .hs-apps { display: flex; gap: 1.5em; flex-wrap: wrap; justify-content: center; }
     .app-icon {
       display:flex; flex-direction:column; align-items:center; gap:0.55em;
       cursor:pointer; background:none; border:none; padding:0;
@@ -1006,46 +1036,46 @@ this.css = `
     }
     .app-icon:hover { transform: scale(1.18) translateY(-5px); }
     .app-icon:hover .app-face {
-      box-shadow: 0 10px 28px rgba(0,0,0,0.55), 0 0 24px rgba(124,58,237,0.25), inset 0 1px 0 rgba(255,255,255,0.22);
-      border-color: rgba(255,255,255,0.18);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.6), 0 0 24px rgba(124,58,237,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.2);
     }
     .app-face {
-      width: 60px; height: 60px;
+      width: 64px; height: 64px;
       border-radius: 50%;
       display:flex; align-items:center; justify-content:center;
-      font-size: 1.25rem; font-weight: 700; color:#fff;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.12);
       transition: box-shadow 0.2s, border-color 0.2s;
     }
-    .app-name { font-size:0.67rem; color:rgba(255,255,255,0.45); white-space:nowrap; font-weight:500; letter-spacing:0.01em; }
-    .hs-ver { margin-top:2.2em; font-size:0.6rem; color:rgba(255,255,255,0.1); }
+    .app-name { font-size:0.68rem; color:rgba(255,255,255,0.5); white-space:nowrap; font-weight:600; letter-spacing:0.02em; }
+    .hs-ver { margin-top:1.5em; font-size:0.6rem; color:rgba(255,255,255,0.1); }
     .hs-ver a { color:rgba(255,255,255,0.1); }
   `;
 
 return html`
     <div>
-      <div class="hs-brand"><span aria-hidden="true">✦</span> Parastar</div>
-      <div class="hs-clock">
-        <div class="hs-time">${use(this._time)}</div>
-        <div class="hs-date">${use(this._date)}</div>
-      </div>
-      <div class="hs-search-wrap">
-        <span class="hs-search-icon">🔍</span>
-        <input class="hs-search" placeholder="Search or enter a URL…"
-          autocomplete="off" autocapitalize="off" autocorrect="off"
-          bind:value=${use(this.searchVal)}
-          on:input=${(e) => { this.searchVal = e.target.value; }}
-          on:keyup=${(e) => e.key === "Enter" && handleSearch()}
-        />
-      </div>
-      <div class="hs-apps">
-        ${QUICK_LINKS.map((link) => html`
-          <button class="app-icon" on:click=${() => onNavigate(link.url)}>
-            <div class="app-face" style="background:${link.grad}">${link.letter}</div>
-            <span class="app-name">${link.name}</span>
-          </button>
-        `)}
+      <div class="hs-welcome">Welcome to</div>
+      <div class="hs-name">Parastar</div>
+      <div class="hs-sub">${use(this._date)} &nbsp;·&nbsp; ${use(this._time)}</div>
+      <div class="hs-card">
+        <div class="hs-search-wrap">
+          <span class="hs-search-icon">🔍</span>
+          <input class="hs-search" placeholder="Search or enter a URL…"
+            autocomplete="off" autocapitalize="off" autocorrect="off"
+            bind:value=${use(this.searchVal)}
+            on:input=${(e) => { this.searchVal = e.target.value; }}
+            on:keyup=${(e) => e.key === "Enter" && handleSearch()}
+          />
+        </div>
+        <div class="hs-apps">
+          ${QUICK_LINKS.map((link) => html`
+            <button class="app-icon" on:click=${() => onNavigate(link.url)}>
+              <div class="app-face" style="background:${link.grad}">${link.letter}</div>
+              <span class="app-name">${link.name}</span>
+            </button>
+          `)}
+        </div>
       </div>
       <div class="hs-ver">
         scramjet ${$scramjetVersion.version} ·
@@ -1199,7 +1229,18 @@ this.css = `
     font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     color: #e0def4;
     .main-area { flex: 1; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-    .panel { flex: 1; overflow: hidden; }
+    .panel {
+      flex: 1; overflow: hidden;
+      margin: 1em 1.25em;
+      border-radius: 22px;
+      background: rgba(6, 4, 18, 0.62);
+      backdrop-filter: saturate(200%) blur(28px);
+      -webkit-backdrop-filter: saturate(200%) blur(28px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid rgba(255,255,255,0.16);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 6px 18px rgba(0,0,0,0.35),
+                  inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px rgba(139,92,246,0.07);
+    }
     iframe { border: none; width: 100%; height: 100%; display: block; background: #fff; }
   `;
 
