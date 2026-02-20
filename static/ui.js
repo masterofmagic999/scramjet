@@ -184,28 +184,32 @@ function AccountPanel() {
 					}
 					if (enabled) {
 						return html`
-              <div class="acct-badge on">● Appwrite sync enabled</div>
-              <div class="acct-info">
-                Your cookies are saved to Appwrite and will survive Codespace restarts.
-                No action needed — sync happens automatically in the background.
+              <div>
+                <div class="acct-badge on">● Appwrite sync enabled</div>
+                <div class="acct-info">
+                  Your cookies are saved to Appwrite and will survive Codespace restarts.
+                  No action needed — sync happens automatically in the background.
+                </div>
               </div>
             `;
 					}
 					return html`
-            <div class="acct-badge off">○ Local storage only</div>
-            <div class="acct-info">
-              Cookies are stored in a local file inside the Codespace. They may be
-              lost when the Codespace is deleted or rebuilt.
-            </div>
-            <div class="acct-info">
-              To enable Appwrite cloud sync, add these to your <strong>.env</strong> file
-              and restart the server:
-            </div>
-            <div class="acct-code">APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
+            <div>
+              <div class="acct-badge off">○ Local storage only</div>
+              <div class="acct-info">
+                Cookies are stored in a local file inside the Codespace. They may be
+                lost when the Codespace is deleted or rebuilt.
+              </div>
+              <div class="acct-info">
+                To enable Appwrite cloud sync, add these to your <strong>.env</strong> file
+                and restart the server:
+              </div>
+              <div class="acct-code">APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
 APPWRITE_PROJECT_ID=&lt;your-project-id&gt;
 APPWRITE_API_KEY=&lt;your-api-key&gt;</div>
-            <div class="acct-info" style="font-size:0.76rem;">
-              See the Codespaces guide in the repository for step-by-step instructions.
+              <div class="acct-info" style="font-size:0.76rem;">
+                See the Codespaces guide in the repository for step-by-step instructions.
+              </div>
             </div>
           `;
 				})}
@@ -1164,7 +1168,7 @@ return html`
       ${h(MenuBar, { activeView: use(this.activeView), onSettings: () => cfg.showModal() })}
       <div class="main-area">
         ${use(this.activeView, (view) => {
-if (view === "home") return html`${h(HomeScreen, { onNavigate: navigateTo })}`;
+if (view === "home") return h(HomeScreen, { onNavigate: navigateTo });
 if (view === "browser") return html`
               <div style="display:flex;flex-direction:column;height:100%;">
                 ${h(OsBrowserNav, {
