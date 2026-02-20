@@ -545,7 +545,7 @@ function BrowserApp() {
 	this.mount = () => {
 		const body = btoa(
 			`<body style="background:#000;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
-        <div style="text-align:center"><h2>Welcome to <i>Scramjet</i></h2><p>Type a URL in the bar above and press Enter.</p></div>
+        <div style="text-align:center"><h2>Welcome to <i>Parastar</i></h2><p>Type a URL in the bar above and press Enter.</p></div>
       </body>`
 		);
 		frame.go(`data:text/html;base64,${body}`);
@@ -602,7 +602,7 @@ function BrowserApp() {
         <button class="nav-btn panic" on:click=${panic} title="Clear all cookies, cache, and storage">🗑 Panic</button>
 
         <span class="version">
-          <b>scramjet</b> ${$scramjetVersion.version}
+          <b>Parastar</b> ${$scramjetVersion.version}
           <a href=${use(this.githubURL)}>${$scramjetVersion.build}</a>
         </span>
       </div>
@@ -657,7 +657,7 @@ const GAMES = [
 ];
 
 // ── Games panel ───────────────────────────────────────────────────────────────
-function GamesPanel({ onPlay }) {
+function GamesPanel() {
 this.query = "";
 
 this.css = `
@@ -748,7 +748,7 @@ return html`
             ${[GAMES[0], GAMES[2], GAMES[1]].map((game) => html`
               <button class="featured-card"
                 style="background: linear-gradient(145deg, ${game.color}55 0%, ${game.color}22 60%, rgba(0,0,0,0.4) 100%);"
-                on:click=${() => onPlay(game.url)}>
+                on:click=${() => this.onPlay(game.url)}>
                 <div class="fc-badge">Play now</div>
                 <span class="fc-icon">${game.icon}</span>
                 <span class="fc-name">${game.name}</span>
@@ -761,7 +761,7 @@ return html`
         ${use(this.query, (q) => {
 const filtered = q.trim() ? GAMES.filter((g) => g.name.toLowerCase().includes(q.toLowerCase())) : GAMES;
 return filtered.map((game) => html`
-            <button class="game-card" style="--gc:${game.color};" on:click=${() => onPlay(game.url)}>
+            <button class="game-card" style="--gc:${game.color};" on:click=${() => this.onPlay(game.url)}>
               <span class="gi">${game.icon}</span>
               <span class="gn">${game.name}</span>
             </button>
@@ -773,7 +773,7 @@ return filtered.map((game) => html`
 }
 
 // ── Top Menu Bar ──────────────────────────────────────────────────────────────
-function MenuBar({ activeView, onSettings }) {
+function MenuBar() {
 this._time = "";
 this.mount = () => {
 const tick = () => {
@@ -812,20 +812,20 @@ return html`
     <div>
       <span class="mb-brand"><span aria-hidden="true">✦</span> Parastar</span>
       <span class="mb-sep">|</span>
-      ${use(activeView, (v) => html`<span style="font-size:0.72rem;color:rgba(255,255,255,0.4);">${
+      ${use(this.activeView, (v) => html`<span style="font-size:0.72rem;color:rgba(255,255,255,0.4);">${
 v === "home" ? "Home" : v === "browser" ? "Browser" : v === "games" ? "Games" : v === "sessions" ? "Sessions" : "Account"
 }</span>`)}
       <div class="mb-spacer"></div>
       <div class="mb-status"><div class="status-dot"></div><span>Proxy Active</span></div>
       <span class="mb-sep">|</span>
       <span class="mb-clock">${use(this._time)}</span>
-      <button class="mb-settings-btn" on:click=${onSettings} title="Settings">⚙</button>
+      <button class="mb-settings-btn" on:click=${this.onSettings} title="Settings">⚙</button>
     </div>
   `;
 }
 
 // ── Home Screen ───────────────────────────────────────────────────────────────
-function HomeScreen({ onNavigate }) {
+function HomeScreen() {
 this.searchVal = "";
 this._time = "";
 this._date = "";
@@ -844,7 +844,7 @@ this.unmount = () => clearInterval(id);
 const handleSearch = () => {
 const q = this.searchVal.trim();
 if (!q) return;
-onNavigate(q.startsWith("http") ? q : "https://" + q);
+this.onNavigate(q.startsWith("http") ? q : "https://" + q);
 };
 
 this.css = `
@@ -953,7 +953,7 @@ return html`
         </div>
         <div class="hs-apps">
           ${QUICK_LINKS.map((link) => html`
-            <button class="app-icon" on:click=${() => onNavigate(link.url)}>
+            <button class="app-icon" on:click=${() => this.onNavigate(link.url)}>
               <div class="app-face" style="background:${link.grad}">${link.letter}</div>
               <span class="app-name">${link.name}</span>
             </button>
@@ -961,7 +961,7 @@ return html`
         </div>
       </div>
       <div class="hs-ver">
-        scramjet ${$scramjetVersion.version} ·
+        proxy v${$scramjetVersion.version} ·
         <a href=${"https://github.com/MercuryWorkshop/scramjet/commit/" + $scramjetVersion.build}>${$scramjetVersion.build}</a>
       </div>
     </div>
@@ -969,7 +969,7 @@ return html`
 }
 
 // ── macOS-style floating glass Dock ──────────────────────────────────────────
-function Dock({ activeView, onSelect }) {
+function Dock() {
 const DOCK_ITEMS = [
 { id: "home", label: "Home", icon: "⌂" },
 { id: "browser", label: "Browser", icon: "🌐" },
@@ -1033,12 +1033,12 @@ return html`
       <div class="dock-pill">
         ${DOCK_ITEMS.map((item) => html`
           <button
-            class=${use(activeView, (v) => "di" + (v === item.id ? " active" : ""))}
-            on:click=${() => onSelect(item.id)}
+            class=${use(this.activeView, (v) => "di" + (v === item.id ? " active" : ""))}
+            on:click=${() => this.onSelect(item.id)}
           >
             <span class="di-label">${item.label}</span>
             <div class="di-face">${item.icon}</div>
-            ${use(activeView, (v) => v === item.id ? html`<div class="di-dot"></div>` : html`<div class="di-dot-empty"></div>`)}
+            ${use(this.activeView, (v) => v === item.id ? html`<div class="di-dot"></div>` : html`<div class="di-dot-empty"></div>`)}
           </button>
         `)}
       </div>
@@ -1047,14 +1047,14 @@ return html`
 }
 
 // ── Browser navbar (inside OS app) ───────────────────────────────────────────
-function OsBrowserNav({ url, onBack, onForward, onReload, onNavigate, onNewTab }) {
-this.inputUrl = typeof url === "object" && "value" in url ? url.value : url || "";
+function OsBrowserNav() {
+this.inputUrl = this.url || "";
 
 const submit = () => {
 let u = this.inputUrl.trim();
 if (!u) return;
 if (!u.startsWith("http")) u = "https://" + u;
-onNavigate(u);
+this.onNavigate(u);
 };
 
 this.css = `
@@ -1088,16 +1088,16 @@ this.css = `
 
 return html`
     <div>
-      <button class="nbtn" on:click=${onBack} title="Back">‹</button>
-      <button class="nbtn" on:click=${onForward} title="Forward">›</button>
-      <button class="nbtn" on:click=${onReload} title="Reload">↻</button>
+      <button class="nbtn" on:click=${this.onBack} title="Back">‹</button>
+      <button class="nbtn" on:click=${this.onForward} title="Forward">›</button>
+      <button class="nbtn" on:click=${this.onReload} title="Reload">↻</button>
       <input class="url-bar"
         autocomplete="off" autocapitalize="off" autocorrect="off"
-        bind:value=${use(url)}
+        bind:value=${use(this.url)}
         on:input=${(e) => { this.inputUrl = e.target.value; }}
         on:keyup=${(e) => { if (e.key === "Enter") { this.inputUrl = e.target.value; submit(); } }}
       />
-      <button class="nbtn" on:click=${() => onNewTab()} title="Open in new tab">↗</button>
+      <button class="nbtn" on:click=${() => this.onNewTab()} title="Open in new tab">↗</button>
     </div>
   `;
 }

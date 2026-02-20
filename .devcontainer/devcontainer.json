@@ -1,5 +1,5 @@
 {
-	"name": "Scramjet WebOS",
+	"name": "Parastar WebOS",
 	"image": "mcr.microsoft.com/devcontainers/javascript-node:22",
 	"features": {
 		"ghcr.io/devcontainers/features/rust:1": {
@@ -10,7 +10,7 @@
 	"forwardPorts": [1337],
 	"portsAttributes": {
 		"1337": {
-			"label": "Scramjet Proxy",
+			"label": "Parastar",
 			"onAutoForward": "openBrowser"
 		}
 	},

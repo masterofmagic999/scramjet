@@ -94,9 +94,9 @@ function PlaygroundApp() {
 					<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 				</head>
 				<body>
-					<h1>Scramjet Sandbox Playground</h1>
+					<h1>Parastar Sandbox Playground</h1>
 					<p>
-					Scramjet allows any webpage to be run on the same origin in an isolated manner
+					Parastar allows any webpage to be run on the same origin in an isolated manner
 					</p>
 
 
