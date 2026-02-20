@@ -926,7 +926,7 @@ this.css = `
 
 return html`
     <div>
-      <span class="mb-brand">✦ Parastar</span>
+      <span class="mb-brand"><span aria-hidden="true">✦</span> Parastar</span>
       <span class="mb-sep">|</span>
       ${use(activeView, (v) => html`<span style="font-size:0.72rem;color:rgba(255,255,255,0.4);">${
 v === "home" ? "Home" : v === "browser" ? "Browser" : v === "games" ? "Games" : v === "sessions" ? "Sessions" : "Account"
@@ -967,60 +967,65 @@ this.css = `
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     flex:1; padding-bottom:80px; animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1);
     @keyframes hsGlowPulse {
-      0%, 100% { text-shadow: 0 0 50px rgba(139,92,246,0.65), 0 0 100px rgba(124,58,237,0.3), 0 0 200px rgba(124,58,237,0.1); }
-      50% { text-shadow: 0 0 80px rgba(139,92,246,0.9), 0 0 160px rgba(124,58,237,0.5), 0 0 280px rgba(124,58,237,0.2); }
+      0%, 100% { text-shadow: 0 0 60px rgba(139,92,246,0.7), 0 0 120px rgba(124,58,237,0.35), 0 0 240px rgba(124,58,237,0.12); }
+      50% { text-shadow: 0 0 90px rgba(167,139,250,1), 0 0 180px rgba(124,58,237,0.6), 0 0 320px rgba(124,58,237,0.22); }
     }
+    .hs-brand { font-family: "Inter Tight", "Inter", system-ui, sans-serif; /* Inter Tight loaded via Google Fonts in index.html */ font-size: clamp(0.75rem, 1.5vw, 0.9rem); font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(167,139,250,0.6); margin-bottom: 0.35em; user-select: none; }
     .hs-clock { text-align:center; margin-bottom:0.6em; user-select:none; }
     .hs-time {
-      font-size: clamp(4.5rem, 12vw, 8rem); font-weight: 100; letter-spacing: -0.04em; line-height: 1; color: #fff;
-      text-shadow: 0 0 50px rgba(139,92,246,0.65), 0 0 100px rgba(124,58,237,0.3), 0 0 200px rgba(124,58,237,0.1);
-      animation: hsGlowPulse 5s ease-in-out infinite;
+      font-family: "Inter Tight", "Inter", system-ui, sans-serif;
+      font-size: clamp(5rem, 14vw, 9.5rem); font-weight: 200; letter-spacing: -0.04em; line-height: 1; color: #fff;
+      text-shadow: 0 0 60px rgba(139,92,246,0.7), 0 0 120px rgba(124,58,237,0.35), 0 0 240px rgba(124,58,237,0.12);
+      animation: hsGlowPulse 6s ease-in-out infinite;
     }
-    .hs-date { font-size: clamp(0.85rem, 2vw, 1rem); color: rgba(255,255,255,0.35); margin-top: 0.5em; letter-spacing: 0.06em; }
-    .hs-search-wrap { position: relative; width: clamp(300px, 55vw, 580px); margin: 1.5em 0 2em; }
-    .hs-search-icon { position:absolute; left:1.1em; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.32); pointer-events:none; font-size:0.9rem; }
+    .hs-date { font-size: clamp(0.82rem, 1.8vw, 0.95rem); color: rgba(255,255,255,0.32); margin-top: 0.55em; letter-spacing: 0.07em; font-weight: 400; }
+    .hs-search-wrap { position: relative; width: clamp(300px, 52vw, 560px); margin: 1.6em 0 2.2em; }
+    .hs-search-icon { position:absolute; left:1.15em; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.3); pointer-events:none; font-size:0.88rem; }
     .hs-search {
       width:100%;
-      background: rgba(12, 7, 26, 0.65);
-      border: 1px solid rgba(139,92,246,0.25);
-      border-radius: 2.5em; color:#fff; outline:none;
-      padding: 0.88em 1.1em 0.88em 2.9em; font-size: 1rem;
-      backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+      background: rgba(8, 5, 22, 0.68);
+      border: 1px solid rgba(139,92,246,0.28);
+      border-radius: 3em; color:#fff; outline:none;
+      padding: 0.92em 1.2em 0.92em 3em; font-size: 0.97rem;
+      backdrop-filter: saturate(200%) blur(24px); -webkit-backdrop-filter: saturate(200%) blur(24px);
+      box-shadow: 0 6px 28px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
       transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      font-family: inherit;
     }
-    .hs-search::placeholder { color: rgba(255,255,255,0.25); }
+    .hs-search::placeholder { color: rgba(255,255,255,0.22); }
     .hs-search:focus {
-      border-color: rgba(139,92,246,0.7);
-      background: rgba(16, 9, 34, 0.8);
-      box-shadow: 0 0 0 3px rgba(124,58,237,0.22), 0 0 40px rgba(124,58,237,0.18), 0 4px 24px rgba(0,0,0,0.4);
+      border-color: rgba(139,92,246,0.75);
+      background: rgba(12, 7, 30, 0.82);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.22), 0 0 48px rgba(124,58,237,0.2), 0 6px 28px rgba(0,0,0,0.45);
     }
-    .hs-apps { display: flex; gap: 1.25em; flex-wrap: wrap; justify-content: center; max-width: 620px; }
+    .hs-apps { display: flex; gap: 1.35em; flex-wrap: wrap; justify-content: center; max-width: 640px; }
     .app-icon {
-      display:flex; flex-direction:column; align-items:center; gap:0.5em;
+      display:flex; flex-direction:column; align-items:center; gap:0.55em;
       cursor:pointer; background:none; border:none; padding:0;
-      transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .app-icon:hover { transform: scale(1.15) translateY(-4px); }
+    .app-icon:hover { transform: scale(1.18) translateY(-5px); }
     .app-icon:hover .app-face {
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 20px rgba(124,58,237,0.2), inset 0 1px 0 rgba(255,255,255,0.2);
-      border-color: rgba(255,255,255,0.14);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.55), 0 0 24px rgba(124,58,237,0.25), inset 0 1px 0 rgba(255,255,255,0.22);
+      border-color: rgba(255,255,255,0.18);
     }
     .app-face {
-      width: 58px; height: 58px; border-radius: 17px;
+      width: 60px; height: 60px;
+      border-radius: 50%;
       display:flex; align-items:center; justify-content:center;
-      font-size: 1.3rem; font-weight: 700; color:#fff;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.08);
-      transition: box-shadow 0.18s, border-color 0.18s;
+      font-size: 1.25rem; font-weight: 700; color:#fff;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: box-shadow 0.2s, border-color 0.2s;
     }
-    .app-name { font-size:0.68rem; color:rgba(255,255,255,0.5); white-space:nowrap; font-weight:500; }
-    .hs-ver { margin-top:2em; font-size:0.62rem; color:rgba(255,255,255,0.12); }
-    .hs-ver a { color:rgba(255,255,255,0.12); }
+    .app-name { font-size:0.67rem; color:rgba(255,255,255,0.45); white-space:nowrap; font-weight:500; letter-spacing:0.01em; }
+    .hs-ver { margin-top:2.2em; font-size:0.6rem; color:rgba(255,255,255,0.1); }
+    .hs-ver a { color:rgba(255,255,255,0.1); }
   `;
 
 return html`
     <div>
+      <div class="hs-brand"><span aria-hidden="true">✦</span> Parastar</div>
       <div class="hs-clock">
         <div class="hs-time">${use(this._time)}</div>
         <div class="hs-date">${use(this._date)}</div>
@@ -1061,48 +1066,49 @@ const DOCK_ITEMS = [
 ];
 
 this.css = `
-    position: relative; height: 86px; flex-shrink: 0; pointer-events: none;
+    position: relative; height: 90px; flex-shrink: 0; pointer-events: none;
     .dock-pill {
       pointer-events: all; position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
-      display: flex; align-items: flex-end; gap: 5px; padding: 8px 16px 8px;
-      background: rgba(8, 5, 18, 0.68);
-      backdrop-filter: saturate(200%) blur(32px);
-      -webkit-backdrop-filter: saturate(200%) blur(32px);
-      border: 1px solid rgba(139,92,246,0.22);
-      border-top: 1px solid rgba(255,255,255,0.1);
-      border-radius: 26px;
-      box-shadow: 0 20px 56px rgba(0,0,0,0.7), 0 6px 16px rgba(0,0,0,0.45),
-                  inset 0 1px 0 rgba(255,255,255,0.09), 0 0 0 1px rgba(139,92,246,0.1);
+      display: flex; align-items: flex-end; gap: 6px; padding: 9px 18px 9px;
+      background: rgba(6, 4, 16, 0.72);
+      backdrop-filter: saturate(220%) blur(36px);
+      -webkit-backdrop-filter: saturate(220%) blur(36px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-top: 1px solid rgba(255,255,255,0.14);
+      border-bottom-color: rgba(255,255,255,0.06);
+      border-radius: 28px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.75), 0 8px 20px rgba(0,0,0,0.5),
+                  inset 0 1px 0 rgba(255,255,255,0.1), 0 0 0 1px rgba(139,92,246,0.12);
     }
     .di { position: relative; display: flex; flex-direction: column; align-items: center; background: none; border: none; padding: 0 4px; cursor: pointer; transform-origin: bottom center; transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    .di:hover { transform: translateY(-16px) scale(1.42); }
+    .di:hover { transform: translateY(-18px) scale(1.45); }
     .di-face {
-      width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-      font-size: 1.65rem; border-radius: 15px;
-      background: rgba(20,12,38,0.65);
+      width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.7rem; border-radius: 16px;
+      background: rgba(15, 9, 32, 0.7);
       border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 3px 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.09);
       transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
     }
     .di:hover .di-face {
-      background: rgba(30,18,55,0.8);
-      border-color: rgba(167,139,250,0.35);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.5), 0 0 18px rgba(124,58,237,0.2), inset 0 1px 0 rgba(255,255,255,0.12);
+      background: rgba(28,16,52,0.85);
+      border-color: rgba(167,139,250,0.4);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.55), 0 0 22px rgba(124,58,237,0.25), inset 0 1px 0 rgba(255,255,255,0.14);
     }
     .di.active .di-face {
-      background: rgba(124,58,237,0.28);
-      border-color: rgba(167,139,250,0.6);
-      box-shadow: 0 0 0 1px rgba(139,92,246,0.4), 0 4px 16px rgba(124,58,237,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
+      background: rgba(124,58,237,0.3);
+      border-color: rgba(167,139,250,0.65);
+      box-shadow: 0 0 0 1px rgba(139,92,246,0.45), 0 6px 20px rgba(124,58,237,0.4), inset 0 1px 0 rgba(255,255,255,0.14);
     }
-    .di-dot { width: 4px; height: 4px; border-radius: 50%; margin-top: 3px; background: rgba(196,181,253,0.9); box-shadow: 0 0 6px rgba(167,139,250,0.9), 0 0 12px rgba(124,58,237,0.5); }
-    .di-dot-empty { height: 7px; }
+    .di-dot { width: 4px; height: 4px; border-radius: 50%; margin-top: 4px; background: rgba(196,181,253,0.95); box-shadow: 0 0 7px rgba(167,139,250,1), 0 0 14px rgba(124,58,237,0.6); }
+    .di-dot-empty { height: 8px; }
     .di-label {
-      position: absolute; bottom: calc(100% + 14px); left: 50%; transform: translateX(-50%) translateY(5px);
-      background: rgba(8,5,18,0.92); backdrop-filter: blur(12px);
-      color: rgba(255,255,255,0.92); font-size: 0.68rem; font-weight: 600;
-      padding: 4px 11px; border-radius: 9px;
-      border: 1px solid rgba(139,92,246,0.25);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      position: absolute; bottom: calc(100% + 16px); left: 50%; transform: translateX(-50%) translateY(6px);
+      background: rgba(6,4,16,0.94); backdrop-filter: blur(14px);
+      color: rgba(255,255,255,0.94); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.01em;
+      padding: 4px 12px; border-radius: 9px;
+      border: 1px solid rgba(139,92,246,0.28);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.55);
       white-space: nowrap; pointer-events: none; opacity: 0;
       transition: opacity 0.12s, transform 0.12s;
     }
