@@ -18,7 +18,7 @@
 	"postStartCommand": "pnpm dev & node scripts/heartbeat.js",
 	"remoteEnv": {
 		"PORT": "1337",
-		"NODE_OPTIONS": "--max-old-space-size=512"
+		"NODE_OPTIONS": "--max-old-space-size=512 --expose-gc"
 	},
 	"customizations": {
 		"vscode": {

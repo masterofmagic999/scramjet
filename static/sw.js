@@ -12,6 +12,36 @@ importScripts("/scram/scramjet.all.js");
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
 
+// ── Cache management ─────────────────────────────────────────────────────────
+
+// Prefix used for all Cache Storage entries that belong to Scramjet.
+// Only caches with this prefix are touched during cleanup so we never
+// accidentally remove caches that belong to a proxied site.
+const CACHE_PREFIX = "scramjet-";
+
+// Take control of pages immediately on install so that the new SW (with
+// updated cache-cleanup logic) becomes active without requiring a page reload.
+// Trade-off: a newly installed SW takes over while old clients are still open.
+// For a dev proxy like Scramjet this is acceptable – any in-flight requests
+// that were already intercepted will finish normally through the old SW.
+self.addEventListener("install", (event) => {
+	event.waitUntil(self.skipWaiting());
+});
+
+// On activation, delete every Scramjet-owned cache entry from previous
+// versions so stale data does not accumulate in the browser's storage quota.
+self.addEventListener("activate", (event) => {
+	event.waitUntil(
+		caches.keys().then((keys) =>
+			Promise.all(
+				keys
+					.filter((key) => key.startsWith(CACHE_PREFIX))
+					.map((key) => caches.delete(key))
+			)
+		)
+	);
+});
+
 // ── Cookie persistence helpers ──────────────────────────────────────────────
 
 /**

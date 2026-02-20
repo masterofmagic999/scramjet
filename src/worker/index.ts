@@ -95,12 +95,29 @@ export class ScramjetServiceWorker extends EventTarget {
 
 	/**
 	 * Dispatches a message in the message queues.
+	 * A timeout of 30 seconds is applied so that entries for clients that
+	 * disconnect before sending an acknowledgement are removed from
+	 * `syncPool` instead of accumulating indefinitely.
 	 */
 	async dispatch(client: Client, data: MessageW2C): Promise<MessageC2W> {
 		const token = this.synctoken++;
 		let cb: (val: MessageC2W) => void;
-		const promise: Promise<MessageC2W> = new Promise((r) => (cb = r));
-		this.syncPool[token] = cb;
+		let timeoutId: ReturnType<typeof setTimeout>;
+		const promise: Promise<MessageC2W> = new Promise((r) => {
+			cb = r;
+			timeoutId = setTimeout(() => {
+				delete this.syncPool[token];
+				dbg.log(
+					"dispatch",
+					`token ${token} timed out (client likely disconnected)`
+				);
+				r(null);
+			}, 30_000);
+		});
+		this.syncPool[token] = (val) => {
+			clearTimeout(timeoutId);
+			cb(val);
+		};
 		data.scramjet$token = token;
 
 		client.postMessage(data);

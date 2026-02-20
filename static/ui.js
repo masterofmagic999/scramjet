@@ -52,6 +52,15 @@ function authHeaders() {
 }
 
 // ── Session Manager helpers ─────────────────────────────────────────────────
+
+/** Bearer token for the current Supabase session (null = not logged in). */
+let _authToken = localStorage.getItem("sj_auth_token") ?? null;
+
+function authHeaders() {
+	if (!_authToken) return {};
+	return { Authorization: `Bearer ${_authToken}` };
+}
+
 async function fetchCookies() {
 	try {
 		const res = await fetch("/api/cookies", { headers: authHeaders() });
