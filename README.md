@@ -30,6 +30,19 @@ Ensure you are not hosting on a datacenter IP for CAPTCHAs to work reliably alon
 
 An easy to deploy version of Scramjet can be found at [Scramjet-App](https://github.com/MercuryWorkshop/scramjet-app).
 
+## 🚀 Quick Start — GitHub Codespaces (No Install Required)
+
+> **Non-technical users:** You can run Scramjet for free in your browser using GitHub Codespaces — no local install needed.
+
+1. **Fork this repository** – click the **Fork** button at the top right of this page.
+2. **Open a Codespace** – on your fork, click **Code → Codespaces → Create codespace on main**.  
+   [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/masterofmagic999/scramjet)
+3. **Wait for the build** – the Codespace will automatically install all dependencies and build Scramjet. This takes **10–20 minutes** on first run (mostly Rust/WASM compilation). You will see terminal output while it works.
+4. **Open the proxy** – once the build finishes, the dev server starts on port **1337**. GitHub will show a notification; click **Open in Browser**, or go to the **Ports** tab and click the link next to port `1337`. If the notification doesn't appear, open the **Ports** panel (bottom of VS Code) and click the globe icon next to port `1337`.
+5. **Browse freely** – type any URL in the address bar and press **Enter**. Use the **🎮 Games** tab for instant access to popular browser games.
+
+> **Tip:** The Codespace keeps itself alive via a built-in heartbeat. If you stop the Codespace, just restart it — the server starts automatically and the build is skipped (already cached).
+
 ## Development
 
 ### Dependencies
@@ -56,6 +69,15 @@ pnpm dev
 ```
 
 Scramjet should now be running at <http://localhost:1337> and should rebuild upon a file being changed (excluding the rewriter).
+
+### Set up everything (automated)
+
+Run the all-in-one setup script (installs Rust/WASM toolchain, builds everything, starts the server):
+
+```sh
+bash codespace-basic-setup.sh
+pnpm dev
+```
 
 ### Setting up Typedoc
 
@@ -88,10 +110,13 @@ A `.devcontainer/devcontainer.json` is included for one-click Codespace setup.
 
 | Feature | Detail |
 |---|---|
-| Auto-install | `pnpm install` runs automatically on container creation |
+| Auto-install & build | `codespace-basic-setup.sh` installs the full toolchain (Rust, WASM tools) and builds Scramjet on container creation |
+| Auto-start | `pnpm dev` starts the proxy server automatically on every container start |
 | Keep-alive | `scripts/heartbeat.js` pings the server every 4 min to prevent idle suspension |
 | **Less memory usage** | `NODE_OPTIONS=--max-old-space-size=512` is set in the devcontainer to cap V8 heap usage, keeping the Codespace responsive on low-RAM (2-core) instances |
-| Port | `1337` is forwarded automatically |
+| Port | `1337` is forwarded automatically and opens in browser on start |
+
+> **New to Codespaces?** See the [step-by-step Codespaces & Supabase setup guide](docs/user/codespaces-guide.md) for non-technical users.
 
 > **New to Codespaces?** See the [step-by-step Codespaces & Supabase setup guide](docs/user/codespaces-guide.md) for non-technical users.
 

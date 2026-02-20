@@ -1,9 +1,21 @@
 {
 	"name": "Scramjet WebOS",
 	"image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+	"features": {
+		"ghcr.io/devcontainers/features/rust:1": {
+			"version": "stable",
+			"profile": "minimal"
+		}
+	},
 	"forwardPorts": [1337],
-	"postCreateCommand": "pnpm install",
-	"postStartCommand": "node scripts/heartbeat.js &",
+	"portsAttributes": {
+		"1337": {
+			"label": "Scramjet Proxy",
+			"onAutoForward": "openBrowser"
+		}
+	},
+	"postCreateCommand": "bash codespace-basic-setup.sh",
+	"postStartCommand": "pnpm dev & node scripts/heartbeat.js",
 	"remoteEnv": {
 		"PORT": "1337",
 		"NODE_OPTIONS": "--max-old-space-size=512 --expose-gc"

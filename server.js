@@ -55,6 +55,25 @@ const fastify = Fastify({
 	},
 });
 
+// ── Dynamic /config.js — must be registered BEFORE static-file plugin ────────
+// Generates the correct Wisp / Bare URLs from the incoming request's Host
+// so the proxy works on any dynamic hostname (Codespaces, Railway, Render …)
+// without any manual configuration.
+fastify.get("/config.js", async (req, reply) => {
+	const forwarded = req.headers["x-forwarded-proto"];
+	const proto = forwarded
+		? forwarded.split(",")[0].trim()
+		: req.protocol || "http";
+	const host =
+		req.headers["x-forwarded-host"]?.split(",")[0].trim() || req.headers.host;
+	const wsProto = proto === "https" ? "wss" : "ws";
+	reply.header("content-type", "application/javascript; charset=utf-8");
+	return `let _CONFIG = ${JSON.stringify({
+		wispurl: `${wsProto}://${host}/wisp/`,
+		bareurl: `${proto}://${host}/bare/`,
+	})};`;
+});
+
 fastify.register(fastifyStatic, {
 	root: join(fileURLToPath(new URL(".", import.meta.url)), "./static"),
 	decorateReply: false,
@@ -205,11 +224,21 @@ fastify.get("/api/heartbeat", async (_req, _reply) => {
 // ── Header fingerprint randomization ───────────────────────────────────────
 
 const USER_AGENTS = [
-	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-	"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-	"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0",
-	"Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Safari/605.1.15",
+	// Chrome on Windows (most common desktop UA)
+	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+	// Chrome on macOS
+	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+	"Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+	// Chrome on Linux
+	"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+	// Firefox
+	"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0",
+	"Mozilla/5.0 (Macintosh; Intel Mac OS X 14.7; rv:133.0) Gecko/20100101 Firefox/133.0",
+	// Safari
+	"Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.2 Safari/605.1.15",
+	// Edge on Windows
+	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
 ];
 
 export function randomUserAgent() {

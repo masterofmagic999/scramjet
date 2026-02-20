@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Scramjet</title>
+		<title>Parastar</title>
 		<link rel="icon" id="favicon" href="favicon.webp" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,19 +11,24 @@
 			href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:wght@100..900&display=swap"
 			rel="stylesheet"
 		/>
-		<script src="https://cdn.tailwindcss.com"></script>
-		<script>
-			tailwind.config = {
-				darkMode: "class",
-				theme: {
-					extend: {
-						fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
-						backdropBlur: { glass: "16px" },
-					},
-				},
-			};
-		</script>
 		<style>
+			:root {
+				--accent: #7c3aed;
+				--accent-light: #a78bfa;
+				--accent-glow: rgba(124, 58, 237, 0.45);
+				--accent-border: rgba(139, 92, 246, 0.35);
+				--bg-deep: #06040f;
+				--bg-card: rgba(255, 255, 255, 0.04);
+				--bg-card-hover: rgba(124, 58, 237, 0.14);
+				--text-dim: rgba(255, 255, 255, 0.45);
+				--glass-bg: rgba(12, 8, 24, 0.6);
+				--glass-border: rgba(255, 255, 255, 0.1);
+			}
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+			}
 			body,
 			html,
 			#app {
@@ -32,17 +37,164 @@
 				margin: 0;
 				padding: 0;
 				overflow: hidden;
-				background: #050505;
+				background: var(--bg-deep);
+				font-family:
+					"Inter",
+					system-ui,
+					-apple-system,
+					BlinkMacSystemFont,
+					sans-serif;
+				color: #fff;
+			}
+
+			/* ── Animated wallpaper: deep purple nebula ─────────── */
+			@keyframes wgradient {
+				0% {
+					background-position: 0% 50%;
+				}
+				50% {
+					background-position: 100% 50%;
+				}
+				100% {
+					background-position: 0% 50%;
+				}
+			}
+			@keyframes blobA {
+				0%,
+				100% {
+					transform: translate(0, 0) scale(1);
+				}
+				33% {
+					transform: translate(60px, -40px) scale(1.1);
+				}
+				66% {
+					transform: translate(-30px, 50px) scale(0.95);
+				}
+			}
+			@keyframes blobB {
+				0%,
+				100% {
+					transform: translate(0, 0) scale(1);
+				}
+				40% {
+					transform: translate(-80px, 30px) scale(1.15);
+				}
+				70% {
+					transform: translate(40px, -60px) scale(0.9);
+				}
+			}
+			@keyframes blobC {
+				0%,
+				100% {
+					transform: translate(0, 0) scale(1);
+				}
+				50% {
+					transform: translate(50px, 60px) scale(1.08);
+				}
+			}
+
+			.wallpaper {
+				background:
+					radial-gradient(ellipse at 20% 30%, #1a0a3e 0%, transparent 55%),
+					radial-gradient(ellipse at 80% 70%, #0e1a3a 0%, transparent 55%),
+					radial-gradient(ellipse at 50% 10%, #150828 0%, transparent 50%),
+					linear-gradient(170deg, #08041a 0%, #060312 40%, #04040e 100%);
+				background-size:
+					200% 200%,
+					200% 200%,
+					200% 200%,
+					100% 100%;
+				animation: wgradient 25s ease infinite;
+				position: relative;
+				overflow: hidden;
+			}
+			/* Ambient glow blobs */
+			.wallpaper::before,
+			.wallpaper::after {
+				content: "";
+				position: fixed;
+				border-radius: 50%;
+				filter: blur(90px);
+				pointer-events: none;
+				z-index: 0;
+			}
+			.wallpaper::before {
+				width: 700px;
+				height: 700px;
+				top: -200px;
+				left: -200px;
+				background: radial-gradient(
+					circle,
+					rgba(88, 28, 220, 0.22) 0%,
+					transparent 70%
+				);
+				animation: blobA 18s ease-in-out infinite;
+			}
+			.wallpaper::after {
+				width: 600px;
+				height: 600px;
+				bottom: -150px;
+				right: -150px;
+				background: radial-gradient(
+					circle,
+					rgba(30, 64, 175, 0.18) 0%,
+					transparent 70%
+				);
+				animation: blobB 22s ease-in-out infinite;
+			}
+
+			/* ── Utility keyframes ─────────────────────────────── */
+			@keyframes fade {
+				from {
+					opacity: 0;
+					transform: translateY(6px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+			@keyframes slideUp {
+				from {
+					opacity: 0;
+					transform: translateY(28px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+			@keyframes glowPulse {
+				0%,
+				100% {
+					text-shadow:
+						0 0 40px rgba(139, 92, 246, 0.5),
+						0 0 80px rgba(124, 58, 237, 0.2);
+				}
+				50% {
+					text-shadow:
+						0 0 60px rgba(139, 92, 246, 0.8),
+						0 0 120px rgba(124, 58, 237, 0.35);
+				}
+			}
+			@keyframes borderGlow {
+				0%,
+				100% {
+					box-shadow:
+						0 0 0 1px var(--accent-border),
+						0 0 20px var(--accent-glow);
+				}
+				50% {
+					box-shadow:
+						0 0 0 1px rgba(167, 139, 250, 0.55),
+						0 0 35px rgba(124, 58, 237, 0.55);
+				}
 			}
 			.glass {
-				background: rgba(255, 255, 255, 0.05);
-				backdrop-filter: blur(16px);
-				-webkit-backdrop-filter: blur(16px);
-				border: 1px solid rgba(255, 255, 255, 0.1);
-			}
-			@keyframes fade {
-				from { opacity: 0; }
-				to { opacity: 1; }
+				background: var(--glass-bg);
+				backdrop-filter: saturate(180%) blur(20px);
+				-webkit-backdrop-filter: saturate(180%) blur(20px);
+				border: 1px solid var(--glass-border);
 			}
 		</style>
 		<script
@@ -57,8 +209,11 @@
 		<script src="store.js"></script>
 	</head>
 
-	<body class="bg-[#050505] text-white">
-		<div id="app"></div>
+	<body class="wallpaper">
+		<div
+			id="app"
+			style="position: relative; z-index: 1; width: 100%; height: 100%"
+		></div>
 		<script src="ui.js"></script>
 	</body>
 </html>
