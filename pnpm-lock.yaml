@@ -14,9 +14,6 @@ importers:
       '@mercuryworkshop/bare-mux':
         specifier: ^2.1.7
         version: 2.1.7
-      '@supabase/supabase-js':
-        specifier: ^2.97.0
-        version: 2.97.0(bufferutil@4.0.9)
       dom-serializer:
         specifier: ^2.0.0
         version: 2.0.0
@@ -32,6 +29,9 @@ importers:
       idb:
         specifier: ^8.0.3
         version: 8.0.3
+      node-appwrite:
+        specifier: ^22.1.1
+        version: 22.1.1
       parse-domain:
         specifier: ^8.2.2
         version: 8.2.2
@@ -871,30 +871,6 @@ packages:
   '@stephansama/catppuccin-typedoc@1.0.1':
     resolution: {integrity: sha512-xurzpqU8rlP35B4Y7qbpk4j1SF0FXzALT5W1NwRq4/CCP3Ivud0D5HivrFFPrrYbfZKh566+OVk31o6eNLr5aw==}
 
-  '@supabase/auth-js@2.97.0':
-    resolution: {integrity: sha512-2Og/1lqp+AIavr8qS2X04aSl8RBY06y4LrtIAGxat06XoXYiDxKNQMQzWDAKm1EyZFZVRNH48DO5YvIZ7la5fQ==}
-    engines: {node: '>=20.0.0'}
-
-  '@supabase/functions-js@2.97.0':
-    resolution: {integrity: sha512-fSaA0ZeBUS9hMgpGZt5shIZvfs3Mvx2ZdajQT4kv/whubqDBAp3GU5W8iIXy21MRvKmO2NpAj8/Q6y+ZkZyF/w==}
-    engines: {node: '>=20.0.0'}
-
-  '@supabase/postgrest-js@2.97.0':
-    resolution: {integrity: sha512-g4Ps0eaxZZurvfv/KGoo2XPZNpyNtjth9aW8eho9LZWM0bUuBtxPZw3ZQ6ERSpEGogshR+XNgwlSPIwcuHCNww==}
-    engines: {node: '>=20.0.0'}
-
-  '@supabase/realtime-js@2.97.0':
-    resolution: {integrity: sha512-37Jw0NLaFP0CZd7qCan97D1zWutPrTSpgWxAw6Yok59JZoxp4IIKMrPeftJ3LZHmf+ILQOPy3i0pRDHM9FY36Q==}
-    engines: {node: '>=20.0.0'}
-
-  '@supabase/storage-js@2.97.0':
-    resolution: {integrity: sha512-9f6NniSBfuMxOWKwEFb+RjJzkfMdJUwv9oHuFJKfe/5VJR8cd90qw68m6Hn0ImGtwG37TUO+QHtoOechxRJ1Yg==}
-    engines: {node: '>=20.0.0'}
-
-  '@supabase/supabase-js@2.97.0':
-    resolution: {integrity: sha512-kTD91rZNO4LvRUHv4x3/4hNmsEd2ofkYhuba2VMUPRVef1RCmnHtm7rIws38Fg0yQnOSZOplQzafn0GSiy6GVg==}
-    engines: {node: '>=20.0.0'}
-
   '@swc/helpers@0.5.17':
     resolution: {integrity: sha512-5IKx/Y13RsYd+sauPb2x+U/xZikHjolzfuDgTAl/Tdf3Q8rslRvC19NKDLgAJQ6wsqADk10ntlv08nPFw/gO/A==}
 
@@ -984,9 +960,6 @@ packages:
 
   '@types/node@24.3.1':
     resolution: {integrity: sha512-3vXmQDXy+woz+gnrTvuvNrPzekOi+Ds0ReMxw0LzBiK3a+1k0kQn9f2NWk+lgD4rJehFUmYy2gMhJ2ZI+7YP9g==}
-
-  '@types/phoenix@1.6.7':
-    resolution: {integrity: sha512-oN9ive//QSBkf19rfDv45M7eZPi0eEXylht2OLEXicu5b4KoQ1OzXIw+xDSGWxSxe1JmepRR/ZH283vsu518/Q==}
 
   '@types/qs@6.14.0':
     resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==}
@@ -1329,6 +1302,9 @@ packages:
 
   batch@0.6.1:
     resolution: {integrity: sha512-x+VAiMRL6UPkx+kudNvxTl6hB2XNNCG2r+7wixVfIYwu/2HKRXimwQyaumLjMveWvT2Hkd/cAJw+QBMfJ/EKVw==}
+
+  bignumber.js@9.3.1:
+    resolution: {integrity: sha512-Ko0uX15oIUS7wJ3Rb30Fs6SkVbLmPBAKdlm7q9+ak9bbIeFf0MwuBsQV6z7+X768/cHsfg+WlysDWJcmthjsjQ==}
 
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -2197,10 +2173,6 @@ packages:
     resolution: {integrity: sha512-Y93lCzHYgGWdrJ66yIktxiaGULYc6oGiABxhcO5AufBeOyoIdZF7bIfLaOrbM0iGIOXQQgxxRrFEnb+Y6w1n4A==}
     engines: {node: '>=10.18'}
 
-  iceberg-js@0.8.1:
-    resolution: {integrity: sha512-1dhVQZXhcHje7798IVM+xoo/1ZdVfzOMIc8/rgVSijRK38EDqOJoGula9N/8ZI5RD8QTxNQtK/Gozpr+qUqRRA==}
-    engines: {node: '>=20.0.0'}
-
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -2411,6 +2383,9 @@ packages:
   js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
     hasBin: true
+
+  json-bigint@1.0.0:
+    resolution: {integrity: sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==}
 
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
@@ -2779,6 +2754,12 @@ packages:
 
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
+
+  node-appwrite@22.1.1:
+    resolution: {integrity: sha512-lNj77U1z/8W724L2EZf0i0eczk3Kua2jWP1lg3IRhxbRHrvmCRofKkkINQBhcVVXJsizeKdVpt+lo1osv3evhQ==}
+
+  node-fetch-native-with-agent@1.7.2:
+    resolution: {integrity: sha512-5MaOOCuJEvcckoz7/tjdx1M6OusOY6Xc5f459IaruGStWnKzlI1qpNgaAwmn4LmFYcsSlj+jBMk84wmmRxfk5g==}
 
   node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
@@ -4771,44 +4752,6 @@ snapshots:
 
   '@stephansama/catppuccin-typedoc@1.0.1': {}
 
-  '@supabase/auth-js@2.97.0':
-    dependencies:
-      tslib: 2.8.1
-
-  '@supabase/functions-js@2.97.0':
-    dependencies:
-      tslib: 2.8.1
-
-  '@supabase/postgrest-js@2.97.0':
-    dependencies:
-      tslib: 2.8.1
-
-  '@supabase/realtime-js@2.97.0(bufferutil@4.0.9)':
-    dependencies:
-      '@types/phoenix': 1.6.7
-      '@types/ws': 8.18.1
-      tslib: 2.8.1
-      ws: 8.18.3(bufferutil@4.0.9)
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
-  '@supabase/storage-js@2.97.0':
-    dependencies:
-      iceberg-js: 0.8.1
-      tslib: 2.8.1
-
-  '@supabase/supabase-js@2.97.0(bufferutil@4.0.9)':
-    dependencies:
-      '@supabase/auth-js': 2.97.0
-      '@supabase/functions-js': 2.97.0
-      '@supabase/postgrest-js': 2.97.0
-      '@supabase/realtime-js': 2.97.0(bufferutil@4.0.9)
-      '@supabase/storage-js': 2.97.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
   '@swc/helpers@0.5.17':
     dependencies:
       tslib: 2.8.1
@@ -4926,8 +4869,6 @@ snapshots:
   '@types/node@24.3.1':
     dependencies:
       undici-types: 7.10.0
-
-  '@types/phoenix@1.6.7': {}
 
   '@types/qs@6.14.0': {}
 
@@ -5380,6 +5321,8 @@ snapshots:
   base64id@2.0.0: {}
 
   batch@0.6.1: {}
+
+  bignumber.js@9.3.1: {}
 
   binary-extensions@2.3.0: {}
 
@@ -6302,8 +6245,6 @@ snapshots:
 
   hyperdyperid@1.2.0: {}
 
-  iceberg-js@0.8.1: {}
-
   iconv-lite@0.4.24:
     dependencies:
       safer-buffer: 2.1.2
@@ -6457,6 +6398,10 @@ snapshots:
   js-yaml@4.1.0:
     dependencies:
       argparse: 2.0.1
+
+  json-bigint@1.0.0:
+    dependencies:
+      bignumber.js: 9.3.1
 
   json-buffer@3.0.1: {}
 
@@ -6982,6 +6927,13 @@ snapshots:
 
   neo-async@2.6.2:
     optional: true
+
+  node-appwrite@22.1.1:
+    dependencies:
+      json-bigint: 1.0.0
+      node-fetch-native-with-agent: 1.7.2
+
+  node-fetch-native-with-agent@1.7.2: {}
 
   node-fetch@2.7.0:
     dependencies:

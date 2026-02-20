@@ -116,9 +116,7 @@ A `.devcontainer/devcontainer.json` is included for one-click Codespace setup.
 | **Less memory usage** | `NODE_OPTIONS=--max-old-space-size=512` is set in the devcontainer to cap V8 heap usage, keeping the Codespace responsive on low-RAM (2-core) instances |
 | Port | `1337` is forwarded automatically and opens in browser on start |
 
-> **New to Codespaces?** See the [step-by-step Codespaces & Supabase setup guide](docs/user/codespaces-guide.md) for non-technical users.
-
-> **New to Codespaces?** See the [step-by-step Codespaces & Supabase setup guide](docs/user/codespaces-guide.md) for non-technical users.
+> **New to Codespaces?** See the [step-by-step Codespaces & Appwrite setup guide](docs/user/codespaces-guide.md) for non-technical users.
 
 To start the heartbeat manually: `node scripts/heartbeat.js`
 
@@ -132,27 +130,28 @@ Copy `.env.example` to `.env` and fill in the values:
 | `STORE_KEY` | Encryption key for the server-side cookie store (AES-256-GCM, file mode only). Leave unset to store cookies as plain JSON. |
 | `COOKIE_STORE_PATH` | Path to the cookie store file (default: `.cookies.json`, file mode only) |
 | `NODE_OPTIONS` | Set to `--max-old-space-size=512` to limit V8 heap for low-RAM environments |
-| `SUPABASE_URL` | Supabase project URL — enables cloud-backed cookie storage and user accounts |
-| `SUPABASE_ANON_KEY` | Supabase anon/public key — used for user sign-up and sign-in |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service-role key — used server-side for reading/writing cookie data |
+| `APPWRITE_ENDPOINT` | Appwrite API endpoint (default: `https://cloud.appwrite.io/v1`) |
+| `APPWRITE_PROJECT_ID` | Appwrite project ID — enables cloud-backed cookie storage |
+| `APPWRITE_API_KEY` | Appwrite server-side API key — never exposed to the browser |
 
-### Supabase backend
+### Appwrite backend
 
-When `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are set, cookies are stored in Supabase instead of a local JSON file.  This provides:
+When `APPWRITE_PROJECT_ID` and `APPWRITE_API_KEY` are set, cookies are stored in Appwrite instead of a local JSON file.  This provides:
 
 - **Persistent sessions** – cookies survive Codespace restarts and rebuilds.
-- **Per-user accounts** – each user's cookies are isolated under their own Supabase account.
 - **Flat memory usage** – no cookie data is held in the Node.js heap between requests, so the server stays within the 512 MB cap indefinitely.
 
-Create the required table in your Supabase project's SQL editor:
+Required Appwrite database / collection (create once in your Appwrite project):
 
-```sql
-CREATE TABLE IF NOT EXISTS cookie_store (
-  user_id    TEXT PRIMARY KEY,
-  cookies    JSONB NOT NULL DEFAULT '{}',
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-```
+| Setting | Value |
+|---|---|
+| Database ID | `6998bda1003d071c37b6` |
+| Collection ID | `parastar` |
+| Attribute `user_id` | String, required, size 36 |
+| Attribute `cookies` | String, required, size 1000000 |
+| Attribute `updated_at` | DateTime, required |
+
+See [docs/user/codespaces-guide.md](docs/user/codespaces-guide.md) for a step-by-step walkthrough.
 
 ## Resources
 

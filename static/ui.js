@@ -49,17 +49,24 @@ document.addEventListener("visibilitychange", () => {
 
 // ── Session Manager helpers ─────────────────────────────────────────────────
 
-/** Bearer token for the current Supabase session (null = not logged in). */
-let _authToken = localStorage.getItem("sj_auth_token") ?? null;
+/** True when the server has Appwrite cloud sync enabled. */
+let _cloudEnabled = null; // null = not yet checked
 
-function authHeaders() {
-	if (!_authToken) return {};
-	return { Authorization: `Bearer ${_authToken}` };
+async function checkCloudStatus() {
+	if (_cloudEnabled !== null) return _cloudEnabled;
+	try {
+		const res = await fetch("/api/cloud-status");
+		const data = await res.json();
+		_cloudEnabled = !!data.appwrite;
+	} catch {
+		_cloudEnabled = false;
+	}
+	return _cloudEnabled;
 }
 
 async function fetchCookies() {
 	try {
-		const res = await fetch("/api/cookies", { headers: authHeaders() });
+		const res = await fetch("/api/cookies");
 		return await res.json();
 	} catch {
 		return {};
@@ -69,19 +76,17 @@ async function fetchCookies() {
 async function deleteCookie(domain, name) {
 	await fetch(`/api/cookies/${encodeURIComponent(domain)}/${encodeURIComponent(name)}`, {
 		method: "DELETE",
-		headers: authHeaders(),
 	});
 }
 
 async function clearAllCookies() {
-	await fetch("/api/cookies", { method: "DELETE", headers: authHeaders() });
+	await fetch("/api/cookies", { method: "DELETE" });
 }
 
 // ── Panic / one-click clear ─────────────────────────────────────────────────
 async function panic() {
 	await clearAllCookies();
-	// Clear browser-side storage too (also clears the sj_auth_token)
-	_authToken = null;
+	// Clear browser-side storage too
 	localStorage.clear();
 	sessionStorage.clear();
 	if ("caches" in self) {
@@ -94,91 +99,12 @@ async function panic() {
 	location.reload();
 }
 
-// ── Account management ───────────────────────────────────────────────────────
+// ── Cloud Sync panel ─────────────────────────────────────────────────────────
 function AccountPanel() {
-	this.view = "idle"; // "idle" | "login" | "register" | "loggedIn"
-	this.email = "";
-	this.password = "";
-	this.error = "";
-	this.userId = "";
+	this.cloudEnabled = null; // null = checking, true = on, false = off
 
 	this.mount = async () => {
-		if (!_authToken) {
-			this.view = "idle";
-			return;
-		}
-		try {
-			const res = await fetch("/api/auth/me", { headers: authHeaders() });
-			if (res.ok) {
-				const { userId } = await res.json();
-				this.userId = userId;
-				this.view = "loggedIn";
-			} else {
-				_authToken = null;
-				localStorage.removeItem("sj_auth_token");
-				this.view = "idle";
-			}
-		} catch {
-			this.view = "idle";
-		}
-	};
-
-	const doLogin = async () => {
-		this.error = "";
-		try {
-			const res = await fetch("/api/auth/login", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email: this.email, password: this.password }),
-			});
-			const data = await res.json();
-			if (!res.ok) {
-				this.error = data.error ?? "Login failed";
-				return;
-			}
-			_authToken = data.accessToken;
-			localStorage.setItem("sj_auth_token", _authToken);
-			this.userId = data.userId;
-			this.view = "loggedIn";
-			this.password = "";
-		} catch {
-			this.error = "Network error";
-		}
-	};
-
-	const doRegister = async () => {
-		this.error = "";
-		try {
-			const res = await fetch("/api/auth/register", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email: this.email, password: this.password }),
-			});
-			const data = await res.json();
-			if (!res.ok) {
-				this.error = data.error ?? "Registration failed";
-				return;
-			}
-			if (data.accessToken) {
-				_authToken = data.accessToken;
-				localStorage.setItem("sj_auth_token", _authToken);
-				this.userId = data.userId;
-				this.view = "loggedIn";
-			} else {
-				this.error = "Check your email to confirm your account, then log in.";
-				this.view = "idle";
-			}
-			this.password = "";
-		} catch {
-			this.error = "Network error";
-		}
-	};
-
-	const doLogout = () => {
-		_authToken = null;
-		localStorage.removeItem("sj_auth_token");
-		this.userId = "";
-		this.view = "idle";
+		this.cloudEnabled = await checkCloudStatus();
 	};
 
 	this.css = `
@@ -207,73 +133,6 @@ function AccountPanel() {
       -webkit-text-fill-color: transparent;
       letter-spacing: -0.01em;
     }
-    .acct-input {
-      width: 100%;
-      box-sizing: border-box;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 0.7em;
-      color: #fff;
-      padding: 0.55em 0.85em;
-      font-size: 0.9rem;
-      margin-bottom: 0.65em;
-      outline: none;
-      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
-    }
-    .acct-input::placeholder { color: rgba(255,255,255,0.28); }
-    .acct-input:focus {
-      border-color: rgba(139,92,246,0.65);
-      background: rgba(255,255,255,0.09);
-      box-shadow: 0 0 0 3px rgba(124,58,237,0.18), 0 0 16px rgba(124,58,237,0.12);
-    }
-    .acct-btn {
-      width: 100%;
-      padding: 0.6em;
-      border-radius: 0.7em;
-      border: 1px solid rgba(139,92,246,0.45);
-      background: rgba(124,58,237,0.18);
-      color: #c4b5fd;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 0.45em;
-      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.12s;
-    }
-    .acct-btn:hover {
-      background: rgba(124,58,237,0.32);
-      border-color: rgba(167,139,250,0.65);
-      box-shadow: 0 0 18px rgba(124,58,237,0.3);
-      transform: translateY(-1px);
-    }
-    .acct-btn.danger {
-      border-color: rgba(220,50,50,0.4);
-      background: rgba(220,50,50,0.12);
-      color: #f87171;
-    }
-    .acct-btn.danger:hover {
-      background: rgba(220,50,50,0.26);
-      border-color: rgba(248,113,113,0.5);
-      box-shadow: 0 0 18px rgba(220,50,50,0.25);
-    }
-    .acct-link {
-      font-size: 0.8rem;
-      color: rgba(167,139,250,0.6);
-      cursor: pointer;
-      text-decoration: underline;
-      margin-top: 0.3em;
-      display: inline-block;
-      transition: color 0.12s;
-    }
-    .acct-link:hover { color: rgba(196,181,253,0.9); }
-    .acct-error {
-      color: #f87171;
-      font-size: 0.8rem;
-      margin-bottom: 0.6em;
-      background: rgba(220,50,50,0.1);
-      border: 1px solid rgba(220,50,50,0.2);
-      border-radius: 0.5em;
-      padding: 0.4em 0.65em;
-    }
     .acct-info {
       font-size: 0.82rem;
       color: rgba(255,255,255,0.45);
@@ -281,49 +140,73 @@ function AccountPanel() {
       margin-bottom: 0.9em;
       line-height: 1.5;
     }
+    .acct-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4em;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 2em;
+      padding: 0.35em 0.9em;
+      margin-bottom: 1em;
+    }
+    .acct-badge.on {
+      background: rgba(34,197,94,0.15);
+      border: 1px solid rgba(34,197,94,0.35);
+      color: #4ade80;
+    }
+    .acct-badge.off {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.4);
+    }
+    .acct-code {
+      font-family: monospace;
+      font-size: 0.78rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0.45em;
+      padding: 0.65em 0.9em;
+      color: rgba(196,181,253,0.8);
+      margin-bottom: 0.6em;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
   `;
 
 	return html`
     <div>
       <div class="acct-card">
-        ${use(this.view, (view) => {
-					if (view === "loggedIn") {
+        <div class="acct-title">☁️ Cloud Sync</div>
+        ${use(this.cloudEnabled, (enabled) => {
+					if (enabled === null) {
+						return html`<div class="acct-info">Checking…</div>`;
+					}
+					if (enabled) {
 						return html`
-              <div class="acct-title">👤 Account</div>
-              <div class="acct-info">Logged in · your cookies are saved to your account and will be available next time you log in.</div>
-              <div class="acct-info" style="font-size:0.72rem;color:rgba(255,255,255,0.3);">User ID: ${use(this.userId)}</div>
-              <button class="acct-btn danger" on:click=${doLogout}>Log out</button>
+              <div class="acct-badge on">● Appwrite sync enabled</div>
+              <div class="acct-info">
+                Your cookies are saved to Appwrite and will survive Codespace restarts.
+                No action needed — sync happens automatically in the background.
+              </div>
             `;
 					}
-					if (view === "register") {
-						return html`
-              <div class="acct-title">📝 Create Account</div>
-              ${use(this.error, (e) => e ? html`<div class="acct-error">${e}</div>` : "")}
-              <input class="acct-input" type="email" placeholder="Email"
-                bind:value=${use(this.email)}
-                on:input=${(e) => { this.email = e.target.value; }} />
-              <input class="acct-input" type="password" placeholder="Password"
-                bind:value=${use(this.password)}
-                on:input=${(e) => { this.password = e.target.value; }}
-                on:keyup=${(e) => e.key === "Enter" && doRegister()} />
-              <button class="acct-btn" on:click=${doRegister}>Create account</button>
-              <span class="acct-link" on:click=${() => { this.view = "login"; this.error = ""; }}>← Back to login</span>
-            `;
-					}
-					// login / idle
 					return html`
-            <div class="acct-title">🔐 Sign in to save sessions</div>
-            <div class="acct-info">Log in to sync your cookies to the cloud via Supabase so they persist across Codespace restarts.</div>
-            ${use(this.error, (e) => e ? html`<div class="acct-error">${e}</div>` : "")}
-            <input class="acct-input" type="email" placeholder="Email"
-              bind:value=${use(this.email)}
-              on:input=${(e) => { this.email = e.target.value; }} />
-            <input class="acct-input" type="password" placeholder="Password"
-              bind:value=${use(this.password)}
-              on:input=${(e) => { this.password = e.target.value; }}
-              on:keyup=${(e) => e.key === "Enter" && doLogin()} />
-            <button class="acct-btn" on:click=${doLogin}>Log in</button>
-            <span class="acct-link" on:click=${() => { this.view = "register"; this.error = ""; }}>Don't have an account? Register</span>
+            <div class="acct-badge off">○ Local storage only</div>
+            <div class="acct-info">
+              Cookies are stored in a local file inside the Codespace. They may be
+              lost when the Codespace is deleted or rebuilt.
+            </div>
+            <div class="acct-info">
+              To enable Appwrite cloud sync, add these to your <strong>.env</strong> file
+              and restart the server:
+            </div>
+            <div class="acct-code">APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
+APPWRITE_PROJECT_ID=&lt;your-project-id&gt;
+APPWRITE_API_KEY=&lt;your-api-key&gt;</div>
+            <div class="acct-info" style="font-size:0.76rem;">
+              See the Codespaces guide in the repository for step-by-step instructions.
+            </div>
           `;
 				})}
       </div>

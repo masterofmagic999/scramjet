@@ -1,8 +1,8 @@
 /**
- * Cookie store – file-based (default) or Supabase-backed (cloud).
+ * Cookie store – file-based (default) or Appwrite-backed (cloud).
  *
- * When SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are both set, cookies are
- * persisted in Supabase instead of a local JSON file.  This keeps all session
+ * When APPWRITE_PROJECT_ID and APPWRITE_API_KEY are both set, cookies are
+ * persisted in Appwrite instead of a local JSON file.  This keeps all session
  * data in the cloud so it survives Codespace restarts, and it keeps the
  * Node.js heap usage flat across long-running sessions (no cookie data sits
  * in process memory between requests).
@@ -22,14 +22,14 @@ import {
 } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import {
-	clearCookiesFromSupabase,
-	loadCookiesFromSupabase,
-	saveCookiesToSupabase,
-} from "./supabase-store.js";
+	clearCookiesFromAppwrite,
+	loadCookiesFromAppwrite,
+	saveCookiesToAppwrite,
+} from "./appwrite-store.js";
 
-/** True when a Supabase backend is configured via environment variables. */
-export const SUPABASE_ENABLED = !!(
-	process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
+/** True when an Appwrite backend is configured via environment variables. */
+export const APPWRITE_ENABLED = !!(
+	process.env.APPWRITE_PROJECT_ID && process.env.APPWRITE_API_KEY
 );
 
 /** Fallback user ID for unauthenticated / single-user deployments. */
@@ -101,12 +101,12 @@ function pruneExpired(cookies) {
 /**
  * Load cookies.
  *
- * @param {string} [userId] - User ID for Supabase-backed storage.
+ * @param {string} [userId] - User ID for Appwrite-backed storage.
  * @returns {Promise<object>|object}
  */
 export function loadCookies(userId = DEFAULT_USER) {
-	if (SUPABASE_ENABLED) {
-		return loadCookiesFromSupabase(userId);
+	if (APPWRITE_ENABLED) {
+		return loadCookiesFromAppwrite(userId);
 	}
 	try {
 		if (!existsSync(STORE_PATH)) return {};
@@ -121,12 +121,12 @@ export function loadCookies(userId = DEFAULT_USER) {
  * Persist cookies.
  *
  * @param {object} cookies
- * @param {string} [userId] - User ID for Supabase-backed storage.
+ * @param {string} [userId] - User ID for Appwrite-backed storage.
  * @returns {Promise<void>|void}
  */
 export function saveCookies(cookies, userId = DEFAULT_USER) {
-	if (SUPABASE_ENABLED) {
-		return saveCookiesToSupabase(cookies, userId);
+	if (APPWRITE_ENABLED) {
+		return saveCookiesToAppwrite(cookies, userId);
 	}
 	writeFileSync(STORE_PATH, encrypt(pruneExpired(cookies)), "utf8");
 }
@@ -134,12 +134,12 @@ export function saveCookies(cookies, userId = DEFAULT_USER) {
 /**
  * Delete all cookies for a user.
  *
- * @param {string} [userId] - User ID for Supabase-backed storage.
+ * @param {string} [userId] - User ID for Appwrite-backed storage.
  * @returns {Promise<void>|void}
  */
 export function clearCookies(userId = DEFAULT_USER) {
-	if (SUPABASE_ENABLED) {
-		return clearCookiesFromSupabase(userId);
+	if (APPWRITE_ENABLED) {
+		return clearCookiesFromAppwrite(userId);
 	}
 	writeFileSync(STORE_PATH, encrypt({}), "utf8");
 }
